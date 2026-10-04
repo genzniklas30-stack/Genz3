@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>GENZ – Hof &amp; Lohnunternehmen</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef2f4;color:#172018}
+.top{position:sticky;top:0;z-index:10;background:#1f5d32;color:white;padding:12px;display:flex;gap:8px;justify-content:center;box-shadow:0 2px 8px #0003}
+.top button{border:0;border-radius:10px;padding:12px 18px;font-weight:bold;cursor:pointer;background:#fff;color:#1f5d32;font-size:15px}
+.top button.active{background:#d9ef3a;color:#172018}
+.page{display:none}.page.active{display:block}
+.frame{width:100%;height:calc(100vh - 66px);min-height:800px;border:0;display:block}
+@media(max-width:700px){.frame{height:calc(100vh - 66px);min-height:900px}}
+</style>
+</head>
+<body>
+<div class="top"><button class="active" id="btnHof" onclick="show('hof')">🌾 Hof Verkauf &amp; Lager</button><button id="btnGenz" onclick="show('genz')">🚜 GENZ Lohnunternehmen</button></div>
+<div class="page active" id="hof"><iframe class="frame" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;de&quot;&gt;&lt;head&gt;
+&lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;&lt;meta name=&quot;theme-color&quot; content=&quot;#2563eb&quot;&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;
+&lt;title&gt;Hof Verkauf &amp;amp; Lager&lt;/title&gt;
+&lt;style&gt;
+body{font-family:system-ui;margin:0;background:#f4f6f8;color:#172033;padding:20px}
+main{max-width:900px;margin:auto}.head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{margin:0 0 4px}.muted{color:#64748b}.summary,.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.card,.sell{background:white;border:1px solid #dbe3ee;border-radius:14px;padding:14px}.card h2{margin-top:0}
+.stat b{display:block;font-size:1.3rem;margin-top:4px}.row{display:grid;grid-template-columns:1fr 110px;gap:8px;padding:8px 0;border-top:1px solid #eee}
+.price{font-size:.82rem;color:#64748b}.name{font-weight:650}
+input,select{box-sizing:border-box;width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:9px;font-size:16px}
+.sellgrid{display:grid;grid-template-columns:1.5fr 1fr auto;gap:10px;align-items:end}
+button{padding:11px 15px;border:0;border-radius:9px;background:#2563eb;color:white;font-weight:700;cursor:pointer}
+.secondary{background:white;color:#172033;border:1px solid #cbd5e1}
+.sale{display:flex;justify-content:space-between;border-top:1px solid #eee;padding:8px 0}
+@media(max-width:650px){.summary,.grid{grid-template-columns:1fr}.sellgrid{grid-template-columns:1fr}}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;&lt;main&gt;
+&lt;div class=&quot;head&quot;&gt;&lt;div&gt;&lt;h1&gt;🚜 Hof Verkauf &amp;amp; Lager&lt;/h1&gt;&lt;div class=&quot;muted&quot;&gt;Alle Früchte aus deinen Bildern · Bestand eintragen und Verkäufe berechnen&lt;/div&gt;&lt;/div&gt;&lt;button class=&quot;secondary&quot; id=&quot;reset&quot;&gt;Zurücksetzen&lt;/button&gt;&lt;/div&gt;
+&lt;div class=&quot;summary&quot;&gt;
+&lt;div class=&quot;card stat&quot;&gt;Lagerwert&lt;b id=&quot;stockValue&quot;&gt;0,00&amp;nbsp;€&lt;/b&gt;&lt;/div&gt;
+&lt;div class=&quot;card stat&quot;&gt;Verkauft&lt;b id=&quot;soldValue&quot;&gt;0,00&amp;nbsp;€&lt;/b&gt;&lt;/div&gt;
+&lt;div class=&quot;card stat&quot;&gt;Verkäufe&lt;b id=&quot;saleCount&quot;&gt;0&lt;/b&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&quot;products&quot; class=&quot;grid&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;sell&quot;&gt;&lt;h2&gt;💶 Verkaufen&lt;/h2&gt;&lt;div class=&quot;sellgrid&quot;&gt;
+&lt;div&gt;&lt;label&gt;Produkt&lt;/label&gt;&lt;select id=&quot;product&quot;&gt;&lt;/select&gt;&lt;/div&gt;
+&lt;div&gt;&lt;label&gt;Menge&lt;/label&gt;&lt;input id=&quot;qty&quot; type=&quot;number&quot; min=&quot;0&quot; step=&quot;0.1&quot; value=&quot;0&quot;&gt;&lt;/div&gt;
+&lt;button id=&quot;sellBtn&quot;&gt;Verkaufen&lt;/button&gt;
+&lt;/div&gt;&lt;p id=&quot;result&quot; class=&quot;muted&quot;&gt;Erlös: 0,00&amp;nbsp;€ · Restbestand: 0 Liter&lt;/p&gt;&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;&lt;h2&gt;Letzte Verkäufe&lt;/h2&gt;&lt;div id=&quot;history&quot; class=&quot;muted&quot;&gt;Noch keine Verkäufe.&lt;/div&gt;&lt;/div&gt;
+&lt;/main&gt;
+&lt;script&gt;
+const data=[
+['Getreide','Sommerweizen',700],['Getreide','Sommergerste',680],['Ölsaaten','Raps',1300],['Getreide','Hafer',600],['Getreide','Mais',700],['Ölsaaten','Sonnenblumen',860],['Hülsenfrüchte','Sojabohnen',1500],['Bodenfrüchte','Kartoffeln',530],['Getreide','Reis',2000],['Getreide','Langkornreis',1000],['Bodenfrüchte','Zuckerrüben',210],['Sonderkulturen','Zuckerrohr',450],['Sonderkulturen','Baumwolle',900],['Getreide','Hirse',700],['Obst','Trauben',1200],['Obst','Oliven',1300],['Forst','Pappel',500],['Bodenfrüchte','Rote Bete',270],['Bodenfrüchte','Karotten',720],['Bodenfrüchte','Pastinaken',270],['Hülsenfrüchte','Buschbohnen',1300],['Hülsenfrüchte','Erbsen',2000],['Gemüse','Spinat',500],['Futter','Gras',150],['Zwischenfrüchte','Ölrettich',250],['Futter','Wiese',150],['Getreide','Winterweizen',700],['Getreide','Wintergerste',680],['Getreide','Roggen',850],['Getreide','Triticale',800],['Getreide','Dinkel',750],['Futter','Silage Mais',2100],['Zwischenfrüchte','Wickroggen',600],['Zwischenfrüchte','Grünroggen',600],['Zwischenfrüchte','Humusaktiv',400],['Zwischenfrüchte','Senf',400],['Zwischenfrüchte','Blühende Zwischenfrucht',400],['Futter','Luzerne',300],['Futter','Klee',300],['Futter','Ackergras',180],['Gemüse','Zwiebeln',600]
+];
+const products=data.map((x,i)=&gt;({id:i,cat:x[0],name:x[1],price:x[2],stock:0}));
+let sales=[];
+const euro=n=&gt;new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n);
+const root=document.getElementById('products'),sel=document.getElementById('product');
+[...new Set(products.map(p=&gt;p.cat))].forEach(cat=&gt;{
+ const c=document.createElement('div');c.className='card';c.innerHTML='&lt;h2&gt;'+cat+'&lt;/h2&gt;';
+ products.filter(p=&gt;p.cat===cat).forEach(p=&gt;{
+  const r=document.createElement('div');r.className='row';
+  r.innerHTML='&lt;div&gt;&lt;div class=&quot;name&quot;&gt;'+p.name+'&lt;/div&gt;&lt;div class=&quot;price&quot;&gt;'+euro(p.price)+' / 1.000 Liter&lt;/div&gt;&lt;/div&gt;&lt;input type=&quot;number&quot; min=&quot;0&quot; step=&quot;0.1&quot; value=&quot;0&quot;&gt;';
+  r.querySelector('input').oninput=e=&gt;{p.stock=Math.max(0,Number(e.target.value)||0);update()};c.appendChild(r);
+ });root.appendChild(c);
+});
+products.forEach(p=&gt;{let o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o)});
+function update(){document.getElementById('stockValue').textContent=euro(products.reduce((s,p)=&gt;s+p.stock*p.price/1000,0));document.getElementById('soldValue').textContent=euro(sales.reduce((s,x)=&gt;s+x.total,0));document.getElementById('saleCount').textContent=sales.length}
+function calc(){let p=products[+sel.value],q=Math.max(0,Number(document.getElementById('qty').value)||0);document.getElementById('result').textContent='Erlös: '+euro(q*p.price/1000)+' · Restbestand: '+Math.max(0,p.stock-q).toLocaleString('de-DE')+' Liter';return[p,q]}
+sel.onchange=calc;document.getElementById('qty').oninput=calc;
+document.getElementById('sellBtn').onclick=()=&gt;{let[p,q]=calc();if(q&lt;=0)return;if(q&gt;p.stock){document.getElementById('result').textContent='Nicht genug Lagerbestand!';return}p.stock-=q;sales.unshift({name:p.name,q,total:q*p.price/1000});sales=sales.slice(0,20);let inputs=[...root.querySelectorAll('input')];inputs[p.id].value=p.stock;document.getElementById('history').innerHTML=sales.map(x=&gt;'&lt;div class=&quot;sale&quot;&gt;&lt;span&gt;'+x.name+' · '+x.q+' Liter&lt;/span&gt;&lt;b&gt;'+euro(x.total)+'&lt;/b&gt;&lt;/div&gt;').join('');update();calc()};
+document.getElementById('reset').onclick=()=&gt;{products.forEach(p=&gt;p.stock=0);sales=[];root.querySelectorAll('input').forEach(i=&gt;i.value=0);document.getElementById('history').textContent='Noch keine Verkäufe.';update();calc()};
+update();calc();
+&lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;" title="Hof Verkauf &amp; Lager"></iframe></div>
+<div class="page" id="genz"><iframe class="frame" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;de&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+&lt;title&gt;GENZ Lohnunternehmen&lt;/title&gt;
+&lt;style&gt;
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef2f4;color:#172018}
+header{background:#1f5d32;color:white;padding:20px;text-align:center;box-shadow:0 2px 8px #0002}
+header h1{margin:0;font-size:28px} header p{margin:6px 0 0;opacity:.85}
+main{max-width:1050px;margin:22px auto;padding:0 15px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:20px}
+.card{background:white;border-radius:14px;padding:18px;box-shadow:0 2px 8px #0001}
+.card small{color:#667} .card strong{display:block;font-size:25px;margin-top:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{background:white;border-radius:14px;padding:20px;box-shadow:0 2px 8px #0001}
+h2{margin-top:0;font-size:20px}
+label{display:block;font-weight:bold;margin:11px 0 5px}
+input,select,button{width:100%;padding:11px;border:1px solid #ccd4d0;border-radius:8px;font-size:15px}
+button{border:0;background:#1f5d32;color:white;font-weight:bold;cursor:pointer;margin-top:15px}
+button:hover{background:#174925}.secondary{background:#65736a}.danger{background:#b73535}
+.result{background:#edf7ef;border-radius:10px;padding:15px;margin-top:15px}
+.result b{font-size:24px;color:#1f5d32}
+table{width:100%;border-collapse:collapse}th,td{padding:10px 7px;border-bottom:1px solid #e5e8e6;text-align:left;font-size:14px}
+.badge{padding:5px 8px;border-radius:15px;background:#fff1b8;font-size:12px}
+.empty{text-align:center;color:#778;padding:25px}
+@media(max-width:750px){.cards,.grid{grid-template-columns:1fr}.panel{overflow:auto}}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header&gt;
+&lt;h1&gt;🚜 GENZ Lohnunternehmen&lt;/h1&gt;
+&lt;p&gt;Aufträge berechnen &amp; verwalten&lt;/p&gt;
+&lt;/header&gt;
+&lt;main&gt;
+&lt;div class=&quot;cards&quot;&gt;
+&lt;div class=&quot;card&quot;&gt;&lt;small&gt;Aufträge&lt;/small&gt;&lt;strong id=&quot;count&quot;&gt;0&lt;/strong&gt;&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;&lt;small&gt;Gesamtumsatz&lt;/small&gt;&lt;strong id=&quot;total&quot;&gt;0,00 €&lt;/strong&gt;&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;&lt;small&gt;Bearbeitete Fläche&lt;/small&gt;&lt;strong id=&quot;hectares&quot;&gt;0,00 ha&lt;/strong&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;grid&quot;&gt;
+&lt;section class=&quot;panel&quot;&gt;
+&lt;h2&gt;➕ Neuer Auftrag&lt;/h2&gt;
+&lt;label&gt;Kunde / Hof&lt;/label&gt;&lt;input id=&quot;customer&quot; placeholder=&quot;z. B. Hof Müller&quot;&gt;
+&lt;label&gt;Feldnummer&lt;/label&gt;&lt;input id=&quot;field&quot; placeholder=&quot;z. B. Feld 12&quot;&gt;
+&lt;label&gt;Fläche (ha)&lt;/label&gt;&lt;input id=&quot;area&quot; type=&quot;number&quot; min=&quot;0&quot; step=&quot;0.01&quot; placeholder=&quot;z. B. 12.5&quot; oninput=&quot;calculate()&quot;&gt;
+&lt;label&gt;Arbeitsart&lt;/label&gt;
+&lt;select id=&quot;job&quot; onchange=&quot;calculate()&quot;&gt;
+&lt;option value=&quot;Säen&quot;&gt;Säen&lt;/option&gt;&lt;option value=&quot;Grubbern&quot;&gt;Grubbern&lt;/option&gt;
+&lt;option value=&quot;Pflügen&quot;&gt;Pflügen&lt;/option&gt;&lt;option value=&quot;Düngen&quot;&gt;Düngen&lt;/option&gt;
+&lt;option value=&quot;Kalken&quot;&gt;Kalken&lt;/option&gt;&lt;option value=&quot;Ernten&quot;&gt;Ernten&lt;/option&gt;
+&lt;option value=&quot;Mähen&quot;&gt;Mähen&lt;/option&gt;&lt;option value=&quot;Ballen pressen&quot;&gt;Ballen pressen&lt;/option&gt;
+&lt;option value=&quot;Transport&quot;&gt;Transport&lt;/option&gt;&lt;option value=&quot;Forstarbeiten&quot;&gt;Forstarbeiten&lt;/option&gt;
+&lt;/select&gt;
+&lt;label&gt;Preis pro ha (€)&lt;/label&gt;&lt;input id=&quot;price&quot; type=&quot;number&quot; min=&quot;0&quot; step=&quot;0.01&quot; oninput=&quot;calculate()&quot;&gt;
+&lt;div class=&quot;result&quot;&gt;Auftragspreis: &lt;b id=&quot;calc&quot;&gt;0,00 €&lt;/b&gt;&lt;/div&gt;
+&lt;button onclick=&quot;addOrder()&quot;&gt;Auftrag speichern&lt;/button&gt;
+&lt;/section&gt;
+
+&lt;section class=&quot;panel&quot;&gt;
+&lt;h2&gt;⚙️ Preisübersicht&lt;/h2&gt;
+&lt;p&gt;Die Preise sind frei anpassbar und werden beim Auswählen automatisch eingesetzt.&lt;/p&gt;
+&lt;div id=&quot;prices&quot;&gt;&lt;/div&gt;
+&lt;button class=&quot;secondary&quot; onclick=&quot;resetPrices()&quot;&gt;Standardpreise zurücksetzen&lt;/button&gt;
+&lt;/section&gt;
+&lt;/div&gt;
+
+&lt;section class=&quot;panel&quot; style=&quot;margin-top:18px&quot;&gt;
+&lt;h2&gt;📋 Aufträge&lt;/h2&gt;
+&lt;div id=&quot;orders&quot;&gt;&lt;div class=&quot;empty&quot;&gt;Noch keine Aufträge vorhanden.&lt;/div&gt;&lt;/div&gt;
+&lt;/section&gt;
+&lt;/main&gt;
+
+&lt;script&gt;
+const defaults={
+&quot;Säen&quot;:85,&quot;Grubbern&quot;:70,&quot;Pflügen&quot;:110,&quot;Düngen&quot;:60,&quot;Kalken&quot;:75,
+&quot;Ernten&quot;:140,&quot;Mähen&quot;:80,&quot;Ballen pressen&quot;:95,&quot;Transport&quot;:65,&quot;Forstarbeiten&quot;:120
+};
+let prices=JSON.parse(localStorage.getItem(&quot;genzPrices&quot;)||&quot;null&quot;)||{...defaults};
+let orders=JSON.parse(localStorage.getItem(&quot;genzOrders&quot;)||&quot;[]&quot;);
+
+function euro(n){return Number(n).toLocaleString(&quot;de-DE&quot;,{minimumFractionDigits:2,maximumFractionDigits:2})+&quot; €&quot;}
+function calculate(){
+ const area=Number(document.getElementById(&quot;area&quot;).value)||0;
+ const p=Number(document.getElementById(&quot;price&quot;).value)||0;
+ document.getElementById(&quot;calc&quot;).textContent=euro(area*p);
+}
+function loadPrice(){
+ const job=document.getElementById(&quot;job&quot;).value;
+ document.getElementById(&quot;price&quot;).value=prices[job]??0; calculate();
+}
+document.getElementById(&quot;job&quot;).addEventListener(&quot;change&quot;,loadPrice);
+
+function addOrder(){
+ const customer=document.getElementById(&quot;customer&quot;).value.trim()||&quot;Unbekannter Kunde&quot;;
+ const field=document.getElementById(&quot;field&quot;).value.trim()||&quot;-&quot;;
+ const area=Number(document.getElementById(&quot;area&quot;).value);
+ const job=document.getElementById(&quot;job&quot;).value;
+ const price=Number(document.getElementById(&quot;price&quot;).value);
+
+ if(!Number.isFinite(area) || area&lt;=0){
+   alert(&quot;Bitte eine Fläche größer als 0 ha eingeben.&quot;);
+   document.getElementById(&quot;area&quot;).focus();
+   return;
+ }
+ if(!Number.isFinite(price) || price&lt;0){
+   alert(&quot;Bitte einen gültigen Preis pro ha eingeben.&quot;);
+   document.getElementById(&quot;price&quot;).focus();
+   return;
+ }
+
+ const order={
+   id:Date.now()+Math.floor(Math.random()*1000),
+   customer:customer,
+   field:field,
+   area:area,
+   job:job,
+   price:price,
+   total:area*price,
+   status:&quot;Offen&quot;
+ };
+
+ orders.unshift(order);
+
+ try{
+   localStorage.setItem(&quot;genzOrders&quot;,JSON.stringify(orders));
+ }catch(e){
+   alert(&quot;Der Auftrag wurde für diese Sitzung gespeichert. Dein Browser blockiert möglicherweise den dauerhaften Speicher.&quot;);
+ }
+
+ render();
+ document.getElementById(&quot;customer&quot;).value=&quot;&quot;;
+ document.getElementById(&quot;field&quot;).value=&quot;&quot;;
+ document.getElementById(&quot;area&quot;).value=&quot;&quot;;
+ loadPrice();
+ alert(&quot;Auftrag wurde gespeichert!&quot;);
+}
+function finish(id){
+ const o=orders.find(x=&gt;x.id===id); if(o)o.status=&quot;Fertig&quot;;
+ localStorage.setItem(&quot;genzOrders&quot;,JSON.stringify(orders));render();
+}
+function del(id){
+ orders=orders.filter(x=&gt;x.id!==id);localStorage.setItem(&quot;genzOrders&quot;,JSON.stringify(orders));render();
+}
+function render(){
+ document.getElementById(&quot;count&quot;).textContent=orders.length;
+ document.getElementById(&quot;total&quot;).textContent=euro(orders.reduce((s,o)=&gt;s+o.total,0));
+ document.getElementById(&quot;hectares&quot;).textContent=orders.reduce((s,o)=&gt;s+o.area,0).toLocaleString(&quot;de-DE&quot;,{minimumFractionDigits:2})+&quot; ha&quot;;
+ const box=document.getElementById(&quot;orders&quot;);
+ if(!orders.length){box.innerHTML='&lt;div class=&quot;empty&quot;&gt;Noch keine Aufträge vorhanden.&lt;/div&gt;'}
+ else{
+ box.innerHTML=&quot;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Kunde&lt;/th&gt;&lt;th&gt;Feld&lt;/th&gt;&lt;th&gt;Arbeit&lt;/th&gt;&lt;th&gt;ha&lt;/th&gt;&lt;th&gt;Preis&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;th&gt;Aktion&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&quot;+
+ orders.map(o=&gt;`&lt;tr&gt;&lt;td&gt;${esc(o.customer)}&lt;/td&gt;&lt;td&gt;${esc(o.field)}&lt;/td&gt;&lt;td&gt;${esc(o.job)}&lt;/td&gt;&lt;td&gt;${o.area}&lt;/td&gt;&lt;td&gt;${euro(o.total)}&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;badge&quot;&gt;${o.status}&lt;/span&gt;&lt;/td&gt;&lt;td&gt;${o.status!==&quot;Fertig&quot;?`&lt;button style=&quot;width:auto;padding:7px;margin:0&quot; onclick=&quot;finish(${o.id})&quot;&gt;✓ Fertig&lt;/button&gt;`:&quot;&quot;} &lt;button class=&quot;danger&quot; style=&quot;width:auto;padding:7px;margin:0&quot; onclick=&quot;del(${o.id})&quot;&gt;Löschen&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;`).join(&quot;&quot;)+&quot;&lt;/tbody&gt;&lt;/table&gt;&quot;;
+ }
+}
+function renderPrices(){
+ document.getElementById(&quot;prices&quot;).innerHTML=Object.keys(prices).map(k=&gt;`&lt;div style=&quot;display:flex;gap:8px;margin:6px 0;align-items:center&quot;&gt;&lt;span style=&quot;flex:1&quot;&gt;${k}&lt;/span&gt;&lt;input style=&quot;width:120px&quot; type=&quot;number&quot; value=&quot;${prices[k]}&quot; onchange=&quot;setPrice('${k}',this.value)&quot;&gt;&lt;span&gt;€/ha&lt;/span&gt;&lt;/div&gt;`).join(&quot;&quot;);
+}
+function setPrice(k,v){prices[k]=Number(v)||0;localStorage.setItem(&quot;genzPrices&quot;,JSON.stringify(prices));loadPrice()}
+function resetPrices(){prices={...defaults};localStorage.setItem(&quot;genzPrices&quot;,JSON.stringify(prices));renderPrices();loadPrice()}
+function esc(s){return String(s).replace(/[&amp;&lt;&gt;&quot;']/g,m=&gt;({&quot;&amp;&quot;:&quot;&amp;amp;&quot;,&quot;&lt;&quot;:&quot;&amp;lt;&quot;,&quot;&gt;&quot;:&quot;&amp;gt;&quot;,'&quot;':&quot;&amp;quot;&quot;,&quot;'&quot;:&quot;&amp;#039;&quot;}[m]))}
+renderPrices();loadPrice();render();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" title="GENZ Lohnunternehmen"></iframe></div>
+<script>
+function show(which){
+ document.getElementById('hof').classList.toggle('active',which==='hof');
+ document.getElementById('genz').classList.toggle('active',which==='genz');
+ document.getElementById('btnHof').classList.toggle('active',which==='hof');
+ document.getElementById('btnGenz').classList.toggle('active',which==='genz');
+}
+</script>
+</body></html>
